@@ -5,6 +5,11 @@ DeorphaNN is a graph neural network that predicts peptide agonists for G protein
 DeorphaNN: Virtual screening of GPCR peptide agonists using AlphaFold-predicted active state complexes and deep learning embeddings
 https://www.biorxiv.org/content/10.1101/2025.03.19.644234v1
 
+Dataset available at https://huggingface.co/datasets/lariferg/DeorphaNN/tree/main 
+
+## Model Training
+[DeorphaNN_training.ipynb](https://githubtocolab.com/Zebreu/DeorphaNN/blob/main/DeorphaNN_training.ipynb)
+
 ## Data Preprocessing
 For each GPCR-peptide query:
 1) Use [AlphaFold-multistate](https://github.com/huhlim/alphafold-multistate) to acquire the predicted active state of the GPCR. Trim the top ranked active state structure according to pLDDT and DeepTMHMM identity (template_trim.py).
