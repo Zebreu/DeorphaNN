@@ -12,9 +12,10 @@ Dataset available at https://huggingface.co/datasets/lariferg/DeorphaNN/tree/mai
 
 ## Data Preprocessing
 For each GPCR-peptide query:
-1) Use [AlphaFold-multistate](https://github.com/huhlim/alphafold-multistate) to acquire the predicted active state of the GPCR. Trim the top ranked active state structure according to pLDDT and DeepTMHMM identity (template_trim.py).
-2) Run AlphaFold-Multimer on your GPCR-peptide complex, using the trimmed active state GPCR as a template. The pdbs must be relaxed--to relax post hoc, use pdb_relax.py. Process the pair representations using process_pair_reps.py to obtain three sets of embeddings, averaged across all models. 
-3) Run Arpeggio on the relaxed GPCR-peptide pdb (top ranked by peptide pLDDT) using arpeggio.py
+1) Use [AlphaFold-multistate](https://github.com/huhlim/alphafold-multistate) to acquire the predicted active state of the GPCR. Trim the top ranked active state structure according to pLDDT and DeepTMHMM identity ([template_trim.ipynb](https://github.com/Zebreu/DeorphaNN/blob/main/template_trim.ipynb)).
+2) Run AlphaFold-Multimer on your GPCR-peptide complex using the trimmed active state GPCR as a template. Make sure to save the pair representation, and relax the predicted structures. 
+3) Process the pair representations using process_pair_reps.py to average the pair representations across all models, and then split into three sets of embeddings.
+4) Run Arpeggio on the relaxed GPCR-peptide pdb (top ranked by peptide pLDDT) using arpeggio.ipynb
 
 ## References
 The *C. elegans* dataset was obtained from [Beets, I *et al.* Cell Reports, 2023](https://www.cell.com/cell-reports/fulltext/S2211-1247(23)01069-0?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2211124723010690%3Fshowall%3Dtrue).
