@@ -3,7 +3,7 @@ DeorphaNN is a graph neural network that predicts peptide agonists for G protein
 
 ## Associated paper
 DeorphaNN: Virtual screening of GPCR peptide agonists using AlphaFold-predicted active state complexes and deep learning embeddings
-https://www.biorxiv.org/content/10.1101/2025.03.19.644234v1
+https://www.biorxiv.org/content/10.1101/2025.03.19.644234
 
 Dataset available at https://huggingface.co/datasets/lariferg/DeorphaNN/tree/main 
 
@@ -14,7 +14,8 @@ Dataset available at https://huggingface.co/datasets/lariferg/DeorphaNN/tree/mai
 For each GPCR-peptide query:
 1) Use [AlphaFold-multistate](https://github.com/huhlim/alphafold-multistate) to acquire the predicted active state of the GPCR. Trim the top ranked active state structure according to pLDDT and DeepTMHMM identity ([template_trim.ipynb](https://githubtocolab.com/Zebreu/DeorphaNN/blob/main/template_trim.ipynb)).
 2) Run AlphaFold-Multimer on your GPCR-peptide complex using the trimmed active state GPCR as a template. Make sure to save the pair representation, and relax the predicted structures. 
-3) Process the pair representations using process_pair_reps.py to average the pair representations across all models, and then split into three sets of embeddings.
+3) Process the pair representations using process_pair_reps.py to average the pair representations across all models, and then split into three sets of embeddings. To run for a single GPCR-peptide complex, python process_pair_reps.py --input_dir "/path/to/pair_repr/files" --gpcr_length <GPCR_LENGTH> --gpcr <GPCR_NAME> --peptide <PEPTIDE_NAME>
+
 4) Run Arpeggio on the relaxed GPCR-peptide pdb (top ranked by peptide pLDDT) using [arpeggio.ipynb](https://githubtocolab.com/Zebreu/DeorphaNN/blob/main/arpeggio.ipynb)
 
 ## References
