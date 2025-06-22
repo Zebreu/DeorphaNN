@@ -14,11 +14,33 @@ Dataset available at https://huggingface.co/datasets/lariferg/DeorphaNN/tree/mai
 For each GPCR-peptide query:
 1) Use [AlphaFold-multistate](https://github.com/huhlim/alphafold-multistate) to acquire the predicted active state of the GPCR. Trim the top ranked active state structure according to pLDDT and DeepTMHMM identity ([template_trim.ipynb](https://githubtocolab.com/Zebreu/DeorphaNN/blob/main/template_trim.ipynb)).
 2) Run AlphaFold-Multimer on your GPCR-peptide complex using the trimmed active state GPCR as a template. Make sure to save the pair representation, and relax the predicted structures. 
-3) Process the pair representations using process_pair_reps.py to average the pair representations across all models, and then split into three sets of embeddings. To run for a single GPCR-peptide complex, python process_pair_reps.py --input_dir "/path/to/pair_repr/files" --gpcr_length <GPCR_LENGTH> --gpcr <GPCR_NAME> --peptide <PEPTIDE_NAME>
-
+3) Process the pair representations using process_pair_reps.py to average the pair representations across all models, and then split into three sets of embeddings. To run for a single GPCR-peptide complex, run:
+```
+python process_pair_reps.py --input_dir "/path/to/pair_repr/files" --gpcr_length <GPCR_LENGTH> --gpcr <GPCR_NAME> --peptide <PEPTIDE_NAME>
+```
 4) Run Arpeggio on the relaxed GPCR-peptide pdb (top ranked by peptide pLDDT) using [arpeggio.ipynb](https://githubtocolab.com/Zebreu/DeorphaNN/blob/main/arpeggio.ipynb)
 5) Upload the three processed pair representation files and the Arpeggio contacts file into the colab notebook and run DeorphaNN: 
 [DeorphaNN_deorphaning.ipynb](https://githubtocolab.com/Zebreu/DeorphaNN/blob/main/DeorphaNN_deorphaning.ipynb)
+
+For batch GPCR-peptide queries:
+1) Process pair representations and obtain Arpeggio contacts as above
+2) Organize files:
+```
+/your/top/level/directory/
+├── pair_001/
+│   ├── *_gpcr_T.npy
+│   ├── *_pep_T.npy
+│   ├── *_interaction.npy
+│   └── *.parquet
+├── pair_002/
+│   ├── ...
+...
+```
+4) Install requirements.txt
+5) Run:
+```
+ python DeorphaNN_BATCH.py --root_dir /your/top/level/directory/
+```
 
 ## References
 The *C. elegans* dataset was obtained from [Beets, I *et al.* Cell Reports, 2023](https://www.cell.com/cell-reports/fulltext/S2211-1247(23)01069-0?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2211124723010690%3Fshowall%3Dtrue).
