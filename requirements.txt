@@ -1,0 +1,7 @@
+torch
+torch-geometric
+numpy
+pandas
+numpy_indexed
+pyarrow
+fastparquet
