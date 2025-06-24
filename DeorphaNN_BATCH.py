@@ -6,6 +6,7 @@ import numpy_indexed as npi
 from torch.nn import Linear
 import torch.nn.functional as F
 from torch_geometric.data import Data
+from torch_geometric.utils import k_hop_subgraph, subgraph
 from torch_geometric.nn import GATv2Conv, global_mean_pool
 from torch_geometric.nn.norm import BatchNorm
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -72,20 +73,24 @@ def build_graph(gpcr, pep, edges, bonds):
     pea = np.ones((pe.shape[1],128))*ea.mean(axis=0)
     ei_full = torch.from_numpy(np.concatenate([h, pe],axis=1)).long()
     ea_full = torch.from_numpy(np.concatenate([ea, pea],axis=0)).float()
-    g = Data(x=x, edge_index=ei_full, edge_attr=ea_full)
-    g.x = g.x.to(device)
-    g.edge_index = g.edge_index.to(device)
-    g.edge_attr = g.edge_attr.to(device)
-    g.batch = torch.zeros(g.x.size(0), dtype=torch.long, device=device)
-    return g
+    to_keep = torch.tensor([i for i in range(gl, gl + xp.shape[0])])
+    nodes, _, _, _ = k_hop_subgraph(to_keep, 1, ei_full, relabel_nodes=True, num_nodes=x.shape[0])
+    new_edges, new_edge_attrs = subgraph(nodes, ei_full, ea_full, relabel_nodes=True)
+    graph = Data(x=x[nodes], edge_index=new_edges, edge_attr=new_edge_attrs)
+    graph.x = graph.x.to(device)
+    graph.edge_index = graph.edge_index.to(device)
+    graph.edge_attr = graph.edge_attr.to(device)
+    graph.batch = torch.zeros(graph.x.size(0), dtype=torch.long, device=device)
+    return graph
 
 def predict(g, models):
-    out = []
+    all_model_scores = []
     with torch.no_grad():
         for model in models:
-            p = torch.softmax(model(g.x, g.edge_index, g.edge_attr, g.batch), dim=1)[:,1].item()
-            out.append(p)
-    return sum(out)/len(out)
+            out = model(g.x, g.edge_index, g.edge_attr, g.batch)
+            binding_score = out[0, 1].item()
+            all_model_scores.append(binding_score)
+    return sum(all_model_scores) / len(all_model_scores)
 
 def main():
     p = argparse.ArgumentParser()
@@ -110,7 +115,7 @@ def main():
             print(f"{d} ERROR: {e}")
 
     df = pd.DataFrame(results, columns=['pair','score'])
-    df.to_csv('predictions.csv', index=False)
+    df.to_csv('DeorphaNN_scores.csv', index=False)
 
 if __name__=='__main__':
     main()
