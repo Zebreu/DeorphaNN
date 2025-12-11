@@ -5,7 +5,7 @@ DeorphaNN is a graph neural network that prioritizes peptide agonists for G prot
 DeorphaNN: Virtual screening of GPCR peptide agonists using AlphaFold-predicted active state complexes and deep learning embeddings
 https://www.biorxiv.org/content/10.1101/2025.03.19.644234
 
-Dataset available at https://huggingface.co/datasets/lariferg/DeorphaNN/tree/main 
+Dataset and model weights available at https://huggingface.co/datasets/lariferg/DeorphaNN/tree/main 
 
 ## 1. Data Preparation (Preprocessing)
 
@@ -15,13 +15,15 @@ Before running DeorphaNN, you need to prepare your GPCR-peptide input files. Opt
 
 1. **Prepare GPCR templates**  
    - Use [AlphaFold-multistate](https://github.com/huhlim/alphafold-multistate) to predict the active state of the GPCR.  
-   - Trim the top-ranked active state structure according to pLDDT and DeepTMHMM identity.  
+   - Trim the top-ranked active state structure according to pLDDT and DeepTMHMM identity.
+     
      *Notebook:* [template_trim.ipynb](notebooks/template_trim.ipynb)
 
 2. **Generate GPCR-peptide complexes**  
    - Run AlphaFold-Multimer using the trimmed GPCR as a template.  
    - Save the pair representations and relax the predicted structure with the highest peptide pLDDT.  
    - Determine whether the peptide is within 12.5A of the GPCR binding pocket. Peptides outside the GPCR binding pocket can be assigned −∞ and included in the ranking without running DeorphaNN.
+     
      *Notebook:* [minimum_distance.ipynb](notebooks/minimum_distance.ipynb)
      
 3. **Process pair representations**  
