@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/949064016.svg)](https://doi.org/10.5281/zenodo.20865767)
+
 # DeorphaNN
 DeorphaNN is a graph neural network that prioritizes peptide agonists for G protein-coupled receptors (GPCRs) by integrating active-state GPCR-peptide predicted structures, interatomic interactions, and deep learning protein representations. 
 
